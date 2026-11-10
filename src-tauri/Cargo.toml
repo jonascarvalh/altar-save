@@ -8,7 +8,8 @@ edition = "2024"
 [lib]
 # The `_lib` suffix is necessary to make the lib name unique and not conflict with the bin name on Windows.
 name = "altar_save_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+# Só desktop: `staticlib` e `cdylib` servem apenas para Android/iOS e geravam mais de 1 GB a cada build.
+crate-type = ["rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -33,6 +34,14 @@ encoding_rs = "0.8"
 
 [dev-dependencies]
 tempfile = "3"
+
+# Desenvolvimento: debug info só com números de linha no nosso código e nenhuma nas dependências.
+# Sem isso, `target/debug` passava de 8 GB.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
 
 # https://tauri.app/concept/size/#cargo-configuration
 [profile.release]
