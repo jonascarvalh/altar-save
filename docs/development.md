@@ -7,6 +7,8 @@ Para preparar o ambiente, veja [Instalação e build](installation.md).
 - [Tema e identidade visual](#tema-e-identidade-visual)
 - [Testes](#testes)
 
+Para publicar uma versão, veja [Publicando uma release](release.md).
+
 ## Arquitetura
 
 Arquitetura hexagonal (ports & adapters). O domínio não conhece Tauri, AWS nem sistema de arquivos.

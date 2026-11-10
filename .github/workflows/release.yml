@@ -1,0 +1,82 @@
+# Gera os instaladores e cria um rascunho de release no GitHub a cada tag "v*".
+# Passo a passo em docs/release.md.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # criar a release e anexar os arquivos
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            platform: windows-latest
+          - name: Linux
+            # 22.04: glibc mais antiga, para o .deb e o AppImage rodarem em mais distros.
+            platform: ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir a versão da tag
+        shell: bash
+        run: node scripts/version.mjs --check "${GITHUB_REF_NAME}"
+
+      - name: Dependências do sistema (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Dependências do frontend
+        run: npm ci
+
+      - name: Build e upload para a release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Altar Save ${{ github.ref_name }}
+          releaseDraft: true
+          prerelease: false
+          releaseBody: |
+            ## Downloads
+
+            | Sistema | Arquivo |
+            |---|---|
+            | Windows | `Altar Save_<versão>_x64-setup.exe` |
+            | Debian / Ubuntu | `.deb` |
+            | Fedora / openSUSE | `.rpm` |
+            | Qualquer distro Linux | `.AppImage` (`chmod +x` e execute) |
+
+            > **Windows:** o instalador ainda não é assinado, então o SmartScreen pode mostrar "O Windows protegeu o computador". Clique em **Mais informações → Executar assim mesmo**.
+            >
+            > **Linux:** informe a pasta do PCSX2 em **Automações** (veja [PCSX2 no Linux](https://github.com/${{ github.repository }}/blob/main/docs/pcsx2.md#pcsx2-no-linux)).
+
+            ## Novidades
+
+            <!-- Descreva as mudanças antes de publicar. -->

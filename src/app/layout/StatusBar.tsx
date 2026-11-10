@@ -46,7 +46,7 @@ export function StatusBar() {
           </>
         )}
       </div>
-      <span className="text-subtle">v0.1.0</span>
+      <span className="text-subtle">v{__APP_VERSION__}</span>
     </footer>
   );
 }

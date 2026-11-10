@@ -65,6 +65,7 @@ Com o app aberto:
 | [Como o sync funciona](docs/sync.md) | layout no bucket, upload e download atômicos, decisão em 3 vias, lápides, gatilhos |
 | [Dados locais, backups e reset](docs/local-data.md) | onde ficam configurações, estado e backups; como zerar tudo |
 | [Desenvolvimento](docs/development.md) | arquitetura, como adicionar um emulador, tema e logo, testes |
+| [Publicando uma release](docs/release.md) | versão, tag e instaladores gerados pelo GitHub Actions |
 
 ## Limitações conhecidas
 
