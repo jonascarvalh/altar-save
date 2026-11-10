@@ -156,11 +156,7 @@
           <p class="cta-note">Windows 10/11 · Linux (.deb, .rpm, AppImage) · instalador de ~4 MB</p>
         </div>
 
-        <!--
-          Captura principal. Para trocar o espaço reservado pela imagem:
-          <img src="assets/screenshots/biblioteca.png" alt="Biblioteca do Altar Save com os saves do PCSX2" />
-          no lugar do <div class="shot-placeholder">…</div>.
-        -->
+        <!-- Captura principal: uma versão por tema (ver .shot-dark / .shot-light em styles.css). -->
         <div class="container">
           <figure class="window hero-shot">
             <div class="window-bar">
@@ -168,10 +164,8 @@
               <span class="wordmark small"><b>altar</b><span>save</span></span>
               <span class="window-controls" aria-hidden="true"><i></i><i></i><i></i></span>
             </div>
-            <div class="shot-placeholder">
-              <svg class="icon"><use href="#i-image" /></svg>
-              <span>Captura da Biblioteca em breve</span>
-            </div>
+            <img class="shot-dark" src="assets/screenshots/biblioteca.png" width="2400" height="1440" alt="Biblioteca do Altar Save com os saves do PCSX2" />
+            <img class="shot-light" src="assets/screenshots/biblioteca-light.png" width="2400" height="1440" alt="Biblioteca do Altar Save com os saves do PCSX2 (tema claro)" />
           </figure>
         </div>
       </section>
@@ -309,12 +303,7 @@
         </div>
       </section>
 
-      <!-- Capturas -->
-      <!--
-        Para trocar cada espaço reservado pela imagem, use dentro da <figure>:
-        <img src="assets/screenshots/<nome>.png" alt="…" />
-        no lugar do <div class="shot-placeholder">…</div>.
-      -->
+      <!-- Capturas: uma versão por tema (ver .shot-dark / .shot-light em styles.css). -->
       <section class="section section-alt" id="capturas">
         <div class="container">
           <div class="section-head">
@@ -323,24 +312,18 @@
           </div>
           <div class="shots">
             <figure class="window">
-              <div class="shot-placeholder small">
-                <svg class="icon"><use href="#i-image" /></svg>
-                <span>Captura em breve</span>
-              </div>
+              <img class="shot-dark" src="assets/screenshots/biblioteca-janela.png" width="1600" height="1000" loading="lazy" alt="Biblioteca com o God of War e sua capa" />
+              <img class="shot-light" src="assets/screenshots/biblioteca-janela-light.png" width="1600" height="1000" loading="lazy" alt="Biblioteca com o God of War e sua capa (tema claro)" />
               <figcaption><b>Biblioteca</b> Status de cada save, com capa, tamanho e a última máquina que enviou.</figcaption>
             </figure>
             <figure class="window">
-              <div class="shot-placeholder small">
-                <svg class="icon"><use href="#i-image" /></svg>
-                <span>Captura em breve</span>
-              </div>
+              <img class="shot-dark" src="assets/screenshots/nuvem.png" width="1600" height="1000" loading="lazy" alt="Configuração do Cloudflare R2 com o resultado do teste de conexão" />
+              <img class="shot-light" src="assets/screenshots/nuvem-light.png" width="1600" height="1000" loading="lazy" alt="Configuração do Cloudflare R2 com o resultado do teste de conexão (tema claro)" />
               <figcaption><b>Nuvem</b> Configuração do provedor e teste de conexão passo a passo.</figcaption>
             </figure>
             <figure class="window">
-              <div class="shot-placeholder small">
-                <svg class="icon"><use href="#i-image" /></svg>
-                <span>Captura em breve</span>
-              </div>
+              <img class="shot-dark" src="assets/screenshots/atividade.png" width="1600" height="1000" loading="lazy" alt="Histórico de atividade com envios e erros" />
+              <img class="shot-light" src="assets/screenshots/atividade-light.png" width="1600" height="1000" loading="lazy" alt="Histórico de atividade com envios e erros (tema claro)" />
               <figcaption><b>Atividade</b> Histórico de envios, downloads, conflitos e acesso aos backups.</figcaption>
             </figure>
           </div>

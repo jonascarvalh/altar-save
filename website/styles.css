@@ -463,8 +463,19 @@ code {
 
 /* Só a captura em si (filha direta), não o logo da barra da janela. */
 .window > img {
+  display: block;
   width: 100%;
   height: auto;
+}
+
+/* Cada captura tem uma versão por tema; mostra a do tema atual. */
+.window > img.shot-light,
+[data-theme="light"] .window > img.shot-dark {
+  display: none;
+}
+
+[data-theme="light"] .window > img.shot-light {
+  display: block;
 }
 
 .shot-placeholder {
