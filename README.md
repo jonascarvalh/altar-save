@@ -6,7 +6,7 @@
 
 **Seus saves de emulador sincronizados na nuvem, no seu próprio bucket.**
 
-App desktop leve para Windows que mantém os saves dos seus emuladores sincronizados com um bucket compatível com S3: Cloudflare R2, Amazon S3, MinIO, Backblaze B2, Wasabi…
+App desktop leve para Windows (e Linux) que mantém os saves dos seus emuladores sincronizados com um bucket compatível com S3: Cloudflare R2, Amazon S3, MinIO, Backblaze B2, Wasabi…
 
 `Tauri 2` · `Rust` · `React 19` · `TypeScript` · `Tailwind CSS 4`
 
@@ -64,7 +64,9 @@ Cada save (um cartão `.ps2` ou a pasta de um jogo) vira uma **unidade de sync**
 
 ## Instalação e execução
 
-### Pré-requisitos (Windows)
+### Windows
+
+#### Pré-requisitos
 
 | Ferramenta | Como instalar |
 |---|---|
@@ -73,14 +75,14 @@ Cada save (um cartão `.ps2` ou a pasta de um jogo) vira uma **unidade de sync**
 | Visual Studio Build Tools | carga **"Desktop development with C++"** |
 | WebView2 | já vem no Windows 10/11 |
 
-### Rodando em desenvolvimento
+#### Rodando em desenvolvimento
 
 ```bash
 npm install
 npm run tauri dev
 ```
 
-### Gerando o instalador
+#### Gerando o instalador
 
 ```bash
 npm run tauri build
@@ -90,6 +92,89 @@ Saída:
 
 - executável: `src-tauri/target/release/save-nuvem.exe`
 - instalador: `src-tauri/target/release/bundle/nsis/save-nuvem_<versão>_x64-setup.exe`
+
+### Linux
+
+Testado no Manjaro (Arch) com Wayland. Deve funcionar em qualquer distro com WebKitGTK 4.1.
+
+#### 1. Dependências do sistema
+
+O Tauri usa o WebKitGTK como WebView. Instale-o junto com as ferramentas de compilação:
+
+**Arch / Manjaro**
+
+```bash
+sudo pacman -S --needed webkit2gtk-4.1 base-devel curl wget file openssl librsvg
+```
+
+**Debian / Ubuntu (22.04+)**
+
+```bash
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file \
+  libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+```
+
+**Fedora**
+
+```bash
+sudo dnf install webkit2gtk4.1-devel openssl-devel curl wget file \
+  libappindicator-gtk3-devel librsvg2-devel libxdo-devel
+sudo dnf group install "c-development"
+```
+
+Para outras distros, veja a lista oficial: <https://v2.tauri.app/start/prerequisites/#linux>.
+
+#### 2. Rust
+
+Instale pelo `rustup` (no diretório do usuário, sem `sudo`):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"   # ou abra um terminal novo
+cargo --version
+```
+
+#### 3. Node.js 20+
+
+Pelo gerenciador da distro (`sudo pacman -S nodejs npm`, `sudo apt install nodejs npm`…) ou pelo [nvm](https://github.com/nvm-sh/nvm). Confira com `node -v`.
+
+#### 4. Rodando em desenvolvimento
+
+```bash
+npm install
+npm run tauri dev
+```
+
+A primeira execução compila todas as dependências Rust e leva alguns minutos. As seguintes são incrementais.
+
+#### 5. Gerando os pacotes
+
+```bash
+npm run tauri build
+```
+
+No Linux, o `src-tauri/tauri.linux.conf.json` troca o alvo NSIS (Windows) por pacotes Linux. Saída em `src-tauri/target/release/`:
+
+| Arquivo | Uso |
+|---|---|
+| `save-nuvem` | executável, roda direto |
+| `bundle/deb/save-nuvem_<versão>_amd64.deb` | Debian / Ubuntu: `sudo apt install ./save-nuvem_<versão>_amd64.deb` |
+| `bundle/rpm/save-nuvem-<versão>-1.x86_64.rpm` | Fedora / openSUSE: `sudo dnf install ./save-nuvem-<versão>-1.x86_64.rpm` |
+| `bundle/appimage/save-nuvem_<versão>_amd64.AppImage` | qualquer distro: `chmod +x` e execute |
+
+Para gerar só um formato: `npm run tauri build -- --bundles deb` (ou `rpm`, `appimage`).
+
+> O AppImage baixa o `linuxdeploy` do GitHub na primeira vez, então precisa de internet. Ele também é bem maior (~100 MB), porque embute o WebKitGTK.
+
+#### Problemas comuns no Linux
+
+| Sintoma | Solução |
+|---|---|
+| `No space left on device` durante o build | A pasta `src-tauri/target` passa de 4 GB entre debug e release. Libere espaço ou aponte o build para outro disco: `export CARGO_TARGET_DIR=/caminho/com/espaco/target` |
+| `cargo: command not found` | Rode `source "$HOME/.cargo/env"` ou abra um terminal novo |
+| Erro de `pkg-config` / `webkit2gtk-4.1` não encontrado | Falta a dependência do passo 1 (no Debian/Ubuntu, os pacotes `-dev`) |
+| Janela branca ou em branco (comum com NVIDIA + Wayland) | `WEBKIT_DISABLE_DMABUF_RENDERER=1 npm run tauri dev` (vale também para o executável) |
 
 ## Configurando a nuvem
 
@@ -155,6 +240,18 @@ O app lê o `inis\PCSX2.ini` para descobrir:
 | Envio | o cartão todo a cada mudança | só os arquivos do jogo que mudaram |
 
 Para converter um cartão no PCSX2: **Configurações → Memory Cards → botão direito no cartão → Converter**. O original é mantido.
+
+### PCSX2 no Linux
+
+O app procura por padrão em `~/Documents/PCSX2` (ou `~/Documentos/PCSX2`, conforme o idioma do sistema), que é o caminho do Windows. No Linux o PCSX2 guarda os dados em outro lugar, então **informe a pasta manualmente** em **Automações**:
+
+| Instalação do PCSX2 | Pasta de dados |
+|---|---|
+| Pacote da distro / AppImage | `~/.config/PCSX2` |
+| Flatpak | `~/.var/app/net.pcsx2.PCSX2/config/PCSX2` |
+| Portátil (`portable.txt` ao lado do executável) | a pasta do executável (detectada automaticamente com o PCSX2 aberto) |
+
+A detecção do emulador aberto funciona igual (procura `pcsx2` no nome do processo). Como o Linux não tem trava exclusiva de arquivo, saves em uso não ficam "Aguardando"; downloads e exclusões continuam esperando o PCSX2 fechar.
 
 ## Usando o app
 
@@ -259,6 +356,12 @@ O cache do WebView fica em `%LOCALAPPDATA%\com.savenuvem.app`.
 Remove-Item -Recurse -Force "$env:APPDATA\com.savenuvem.app", "$env:LOCALAPPDATA\com.savenuvem.app"
 ```
 
+No **Linux**, os mesmos arquivos ficam em `~/.local/share/com.savenuvem.app` (com `backups/`), junto com o cache do WebView. Reset completo:
+
+```bash
+rm -rf ~/.local/share/com.savenuvem.app ~/.cache/com.savenuvem.app
+```
+
 O bucket não é afetado. Para zerar a nuvem também, apague a pasta configurada no painel do provedor.
 
 > Apagar só o `sync-state.json` faz o app perder a base: saves diferentes entre PC e nuvem viram conflito, e nada é sobrescrito sem você escolher.
@@ -315,7 +418,7 @@ cd src-tauri
 cargo test
 ```
 
-São 46 testes, incluindo cenários com **duas máquinas compartilhando o mesmo bucket** (em memória):
+São 46 testes no Windows e 45 no Linux (o de arquivo travado com exclusividade só existe no Windows), incluindo cenários com **duas máquinas compartilhando o mesmo bucket** (em memória):
 
 - envio e download entre máquinas, conflito e as duas resoluções;
 - cartões em pasta sincronizando jogo a jogo sem conflito;
@@ -330,10 +433,12 @@ Frontend:
 npx tsc --noEmit
 ```
 
+No Linux, se `cargo` não for encontrado, rode `source "$HOME/.cargo/env"` antes.
+
 ## Limitações conhecidas
 
 - **Credenciais em texto puro** em `config.json`. O próximo passo é o Windows Credential Manager.
-- **Só Windows testado.** O código é multiplataforma, mas a detecção de arquivo em uso e os caminhos padrão foram feitos para Windows.
+- **Feito para Windows; Linux compila e roda**, mas a pasta padrão do PCSX2 ainda é a do Windows (informe a pasta manualmente) e não há detecção de arquivo em uso (veja [PCSX2 no Linux](#pcsx2-no-linux)).
 - Um cartão em pasta só recebe jogos da nuvem se **existir localmente como pasta** (crie ou converta o cartão antes).
 - Sem contas, sem servidor próprio, sem criptografia dos saves no bucket.
 - As lápides (manifests de poucos bytes) permanecem no bucket.
