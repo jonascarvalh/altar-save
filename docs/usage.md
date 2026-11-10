@@ -14,7 +14,7 @@ Os saves agrupados por memory card, com status, tamanho, última alteração e a
 
 - **Sincronizar agora** força um sync completo.
 - **Conflito**: escolha **Manter local** (envia a versão deste PC) ou **Manter nuvem** (baixa; a local vai para o backup).
-- **Excluir**: passe o mouse no card e clique na lixeira. Há uma confirmação antes, e a exclusão vale para todas as máquinas (veja [Exclusão com lápide](sincronizacao.md#exclusão-com-lápide)).
+- **Excluir**: passe o mouse no card e clique na lixeira. Há uma confirmação antes, e a exclusão vale para todas as máquinas (veja [Exclusão com lápide](sync.md#exclusão-com-lápide)).
 
 > Apagar um save **só no PC** faz o app baixá-lo de novo. Para apagar de verdade, use **Excluir** no app.
 
@@ -24,7 +24,7 @@ Liga e desliga o PCSX2 e o sync automático, define a pasta e mostra o que foi d
 
 ## Nuvem
 
-Provedor, credenciais e teste de conexão. Detalhes em [Configurando a nuvem](nuvem.md).
+Provedor, credenciais e teste de conexão. Detalhes em [Configurando a nuvem](cloud.md).
 
 ## Atividade
 

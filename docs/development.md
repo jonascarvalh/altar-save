@@ -1,6 +1,6 @@
 # Desenvolvimento
 
-Para preparar o ambiente, veja [Instalação e build](instalacao.md).
+Para preparar o ambiente, veja [Instalação e build](installation.md).
 
 - [Arquitetura](#arquitetura)
 - [Adicionando outro emulador](#adicionando-outro-emulador)

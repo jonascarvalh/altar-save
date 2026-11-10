@@ -36,11 +36,11 @@ App desktop leve para Windows e Linux que mantém os saves dos seus emuladores s
                           outra máquina ──────┘  (mesmo bucket, mesmo fluxo)
 ```
 
-Cada save vira uma unidade com um `manifest.json` na nuvem. O app compara a versão local, a da nuvem e a última sincronizada nesta máquina para saber qual lado mudou. Detalhes em [Como o sync funciona](docs/sincronizacao.md).
+Cada save vira uma unidade com um `manifest.json` na nuvem. O app compara a versão local, a da nuvem e a última sincronizada nesta máquina para saber qual lado mudou. Detalhes em [Como o sync funciona](docs/sync.md).
 
 ## Começando
 
-Pré-requisitos: **Node.js 20+**, **Rust** e as dependências do Tauri para o seu sistema (Visual Studio Build Tools no Windows, WebKitGTK no Linux). O passo a passo está em [Instalação e build](docs/instalacao.md).
+Pré-requisitos: **Node.js 20+**, **Rust** e as dependências do Tauri para o seu sistema (Visual Studio Build Tools no Windows, WebKitGTK no Linux). O passo a passo está em [Instalação e build](docs/installation.md).
 
 ```bash
 npm install
@@ -50,7 +50,7 @@ npm run tauri build   # instalador (.exe no Windows; .deb, .rpm e .AppImage no L
 
 Com o app aberto:
 
-1. **Nuvem**: escolha o provedor, preencha as chaves e teste a conexão ([guia](docs/nuvem.md)).
+1. **Nuvem**: escolha o provedor, preencha as chaves e teste a conexão ([guia](docs/cloud.md)).
 2. **Automações**: confira a pasta do PCSX2. No Linux, informe a pasta manualmente ([guia](docs/pcsx2.md)).
 3. **Biblioteca**: clique em **Sincronizar agora**. Daí em diante, o sync é automático.
 
@@ -58,13 +58,13 @@ Com o app aberto:
 
 | Guia | Conteúdo |
 |---|---|
-| [Instalação e build](docs/instalacao.md) | pré-requisitos, desenvolvimento e pacotes no Windows e no Linux, problemas comuns |
-| [Configurando a nuvem](docs/nuvem.md) | Cloudflare R2, Amazon S3, S3 compatível, erros do teste de conexão |
+| [Instalação e build](docs/installation.md) | pré-requisitos, desenvolvimento e pacotes no Windows e no Linux, problemas comuns |
+| [Configurando a nuvem](docs/cloud.md) | Cloudflare R2, Amazon S3, S3 compatível, erros do teste de conexão |
 | [Configurando o PCSX2](docs/pcsx2.md) | pasta do emulador, instalações portáteis, cartão em arquivo × em pasta, Linux |
-| [Usando o app](docs/uso.md) | biblioteca, status, conflitos, exclusão, atividade |
-| [Como o sync funciona](docs/sincronizacao.md) | layout no bucket, upload e download atômicos, decisão em 3 vias, lápides, gatilhos |
-| [Dados locais, backups e reset](docs/dados-locais.md) | onde ficam configurações, estado e backups; como zerar tudo |
-| [Desenvolvimento](docs/desenvolvimento.md) | arquitetura, como adicionar um emulador, tema e logo, testes |
+| [Usando o app](docs/usage.md) | biblioteca, status, conflitos, exclusão, atividade |
+| [Como o sync funciona](docs/sync.md) | layout no bucket, upload e download atômicos, decisão em 3 vias, lápides, gatilhos |
+| [Dados locais, backups e reset](docs/local-data.md) | onde ficam configurações, estado e backups; como zerar tudo |
+| [Desenvolvimento](docs/development.md) | arquitetura, como adicionar um emulador, tema e logo, testes |
 
 ## Limitações conhecidas
 

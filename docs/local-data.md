@@ -12,7 +12,7 @@
 | Arquivo | Conteúdo |
 |---|---|
 | `config.json` | nuvem (**inclusive as chaves, em texto puro**) e automações |
-| `sync-state.json` | base de cada save, usada nas [decisões de sync](sincronizacao.md#decisão-em-3-vias) |
+| `sync-state.json` | base de cada save, usada nas [decisões de sync](sync.md#decisão-em-3-vias) |
 | `activity.json` | histórico (últimos 300 eventos) |
 | `backups/` | cópias feitas antes de downloads e exclusões (10 por save, por padrão) |
 

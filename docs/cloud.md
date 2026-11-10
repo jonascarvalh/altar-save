@@ -38,9 +38,9 @@ Informe o **endpoint** completo (ex.: `https://s3.us-west-004.backblazeb2.com`),
 
 ## Várias máquinas no mesmo bucket
 
-Configure cada máquina com o **mesmo bucket e a mesma pasta no bucket**. É assim que elas enxergam os saves umas das outras. Veja [Como o sync funciona](sincronizacao.md) para entender conflitos e exclusões entre máquinas.
+Configure cada máquina com o **mesmo bucket e a mesma pasta no bucket**. É assim que elas enxergam os saves umas das outras. Veja [Como o sync funciona](sync.md) para entender conflitos e exclusões entre máquinas.
 
-> As chaves ficam em texto puro no computador (veja [Dados locais](dados-locais.md)). Prefira um token restrito a esse bucket.
+> As chaves ficam em texto puro no computador (veja [Dados locais](local-data.md)). Prefira um token restrito a esse bucket.
 
 ## Erros comuns no teste de conexão
 
