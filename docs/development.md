@@ -6,6 +6,7 @@ Para preparar o ambiente, veja [Instalação e build](installation.md).
 - [Adicionando outro emulador](#adicionando-outro-emulador)
 - [Tema e identidade visual](#tema-e-identidade-visual)
 - [Testes](#testes)
+- [Site (GitHub Pages)](#site-github-pages)
 
 Para publicar uma versão, veja [Publicando uma release](release.md).
 
@@ -88,3 +89,21 @@ npx tsc --noEmit
 ```
 
 No Linux, se `cargo` não for encontrado, rode `source "$HOME/.cargo/env"` antes.
+
+## Site (GitHub Pages)
+
+A landing page fica em `website/`: HTML, CSS e JS puros, sem build. Usa os mesmos tokens de cor do app e tem tema claro e escuro.
+
+```
+website/
+├─ index.html     conteúdo da página
+├─ styles.css     estilos (tokens no topo, iguais aos de src/styles/globals.css)
+├─ main.js        alternância de tema
+└─ assets/        logo e, depois, as capturas de tela
+```
+
+Para ver localmente, abra `website/index.html` no navegador.
+
+**Publicação**: o workflow [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) publica a pasta `website/` a cada push na `main` que altere o site (ou manualmente, em **Actions → Site → Run workflow**). Antes da primeira vez, em **Settings → Pages**, escolha **Source: GitHub Actions**. O endereço fica `https://<usuário>.github.io/altar-save/`.
+
+**Capturas de tela**: salve os PNGs em `website/assets/screenshots/` e, em `index.html`, troque cada `<div class="shot-placeholder">…</div>` por `<img src="assets/screenshots/<nome>.png" alt="…" />` dentro da mesma `<figure>`. Há comentários no HTML marcando os pontos. Proporção recomendada: a da janela do app (1200 × 760).
