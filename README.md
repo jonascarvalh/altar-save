@@ -1,8 +1,9 @@
 <div align="center">
 
-<img src="public/logo.svg" width="72" alt="save-nuvem" />
-
-# save-nuvem
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg" />
+  <img src="docs/assets/logo-light.svg" width="360" alt="Altar Save" />
+</picture>
 
 **Seus saves de emulador sincronizados na nuvem, no seu próprio bucket.**
 
@@ -47,13 +48,13 @@ App desktop leve para Windows (e Linux) que mantém os saves dos seus emuladores
 - **Exclusão de saves** que se propaga para as outras máquinas (com lápide e proteção contra perda de alterações).
 - **Capas dos jogos** lidas da pasta de capas do PCSX2 (somente leitura).
 - **Histórico de atividade** com filtros (envios, downloads, exclusões, conflitos, erros).
-- Interface **escura, voltada para gamers**, com titlebar própria. O instalador tem ~3,6 MB.
+- Interface **voltada para gamers**, com titlebar própria e **tema escuro ou claro** (segue o sistema até você escolher um pelo ícone de sol/lua na barra de título). O instalador tem ~3,6 MB.
 
 ## Como funciona (visão rápida)
 
 ```
 ┌──────────────┐   watcher / manual   ┌──────────────────┐     S3 API     ┌──────────────────┐
-│  PCSX2       │ ───────────────────▶ │   save-nuvem     │ ─────────────▶ │  Seu bucket      │
+│  PCSX2       │ ───────────────────▶ │   Altar Save     │ ─────────────▶ │  Seu bucket      │
 │  memcards/   │ ◀─────────────────── │  (sync 3 vias)   │ ◀───────────── │  (R2 / S3 / …)   │
 └──────────────┘   download + backup  └──────────────────┘                └──────────────────┘
                                               ▲
@@ -90,8 +91,8 @@ npm run tauri build
 
 Saída:
 
-- executável: `src-tauri/target/release/save-nuvem.exe`
-- instalador: `src-tauri/target/release/bundle/nsis/save-nuvem_<versão>_x64-setup.exe`
+- executável: `src-tauri/target/release/altar-save.exe`
+- instalador: `src-tauri/target/release/bundle/nsis/Altar Save_<versão>_x64-setup.exe`
 
 ### Linux
 
@@ -158,10 +159,10 @@ No Linux, o `src-tauri/tauri.linux.conf.json` troca o alvo NSIS (Windows) por pa
 
 | Arquivo | Uso |
 |---|---|
-| `save-nuvem` | executável, roda direto |
-| `bundle/deb/save-nuvem_<versão>_amd64.deb` | Debian / Ubuntu: `sudo apt install ./save-nuvem_<versão>_amd64.deb` |
-| `bundle/rpm/save-nuvem-<versão>-1.x86_64.rpm` | Fedora / openSUSE: `sudo dnf install ./save-nuvem-<versão>-1.x86_64.rpm` |
-| `bundle/appimage/save-nuvem_<versão>_amd64.AppImage` | qualquer distro: `chmod +x` e execute |
+| `altar-save` | executável, roda direto |
+| `bundle/deb/Altar Save_<versão>_amd64.deb` | Debian / Ubuntu: `sudo apt install "./Altar Save_<versão>_amd64.deb"` |
+| `bundle/rpm/Altar Save-<versão>-1.x86_64.rpm` | Fedora / openSUSE: `sudo dnf install "./Altar Save-<versão>-1.x86_64.rpm"` |
+| `bundle/appimage/Altar Save_<versão>_amd64.AppImage` | qualquer distro: `chmod +x` e execute |
 
 Para gerar só um formato: `npm run tauri build -- --bundles deb` (ou `rpm`, `appimage`).
 
@@ -190,7 +191,7 @@ Abra **Nuvem** no menu lateral, escolha o provedor, preencha os campos, clique e
 | Campo | Exemplo |
 |---|---|
 | Account ID | `a1b2c3d4e5f6…` (32 caracteres) |
-| Bucket | `save-nuvem` |
+| Bucket | `altar-save` |
 | Pasta no bucket | `PCSX2` (opcional) |
 | Access Key ID / Secret | do token criado acima |
 

@@ -13,7 +13,7 @@ pub struct SysinfoProcessMonitor {
 impl Default for SysinfoProcessMonitor {
     fn default() -> Self {
         let system = System::new()
-            .inspect_err(|e| eprintln!("[save-nuvem] detecção de processos indisponível: {e}"))
+            .inspect_err(|e| eprintln!("[altar-save] detecção de processos indisponível: {e}"))
             .ok();
         Self { system: Mutex::new(system) }
     }

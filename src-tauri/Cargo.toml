@@ -1,5 +1,5 @@
 [package]
-name = "save-nuvem"
+name = "altar-save"
 version = "0.1.0"
 description = "Sincroniza saves de emuladores com a nuvem (Cloudflare R2 / Amazon S3)"
 authors = ["Jonas Carvalho"]
@@ -7,7 +7,7 @@ edition = "2024"
 
 [lib]
 # The `_lib` suffix is necessary to make the lib name unique and not conflict with the bin name on Windows.
-name = "save_nuvem_lib"
+name = "altar_save_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

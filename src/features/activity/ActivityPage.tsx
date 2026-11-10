@@ -28,7 +28,7 @@ const KIND_META: Record<ActivityKind, { label: string; icon: ReactNode; classNam
   conflict: { label: "Conflito", icon: <AlertTriangle className="size-4" />, className: "bg-warning/10 text-warning" },
   deferred: { label: "Aguardando", icon: <PauseCircle className="size-4" />, className: "bg-accent/10 text-accent" },
   error: { label: "Erro", icon: <XCircle className="size-4" />, className: "bg-danger/10 text-danger" },
-  info: { label: "Info", icon: <Info className="size-4" />, className: "bg-white/5 text-muted" },
+  info: { label: "Info", icon: <Info className="size-4" />, className: "bg-tint/5 text-muted" },
 };
 
 type Filter = "all" | "upload" | "download" | "delete" | "conflict" | "error";
@@ -82,7 +82,7 @@ export function ActivityPage() {
             onClick={() => setFilter(f.id)}
             className={cn(
               "h-8 rounded-lg px-3 text-xs font-medium transition-colors",
-              filter === f.id ? "bg-white/8 text-fg" : "text-muted hover:bg-white/4 hover:text-fg",
+              filter === f.id ? "bg-tint/8 text-fg" : "text-muted hover:bg-tint/4 hover:text-fg",
             )}
           >
             {f.label}

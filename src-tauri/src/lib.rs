@@ -20,7 +20,7 @@ pub fn run() {
             let state = state::AppState::build(app.handle())?;
             app.manage(state.clone());
             if let Err(err) = runtime::apply_automations(&state) {
-                eprintln!("[save-nuvem] falha ao iniciar automações: {err}");
+                eprintln!("[altar-save] falha ao iniciar automações: {err}");
             }
             runtime::start_background_tasks(state);
             Ok(())
@@ -43,5 +43,5 @@ pub fn run() {
             commands::open_saves_folder,
         ])
         .run(tauri::generate_context!())
-        .expect("erro ao iniciar o save-nuvem");
+        .expect("erro ao iniciar o Altar Save");
 }

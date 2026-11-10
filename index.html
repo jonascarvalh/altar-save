@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>save-nuvem</title>
+    <title>Altar Save</title>
+    <script>
+      // Aplica o tema antes do primeiro paint (evita piscar o tema errado). Ver src/stores/themeStore.ts.
+      (function () {
+        var mode = "system";
+        try {
+          mode = localStorage.getItem("altar-save:theme") || "system";
+        } catch (e) {}
+        var light = mode === "light" || (mode === "system" && matchMedia("(prefers-color-scheme: light)").matches);
+        document.documentElement.dataset.theme = light ? "light" : "dark";
+      })();
+    </script>
   </head>
 
   <body>

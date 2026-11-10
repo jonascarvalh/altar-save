@@ -25,7 +25,7 @@ export function ProviderSelector({ value, onChange }: { value: ProviderKind; onC
             className={cn(
               "group relative flex items-center gap-3 overflow-hidden rounded-xl border p-4 text-left transition-all",
               active
-                ? "border-accent/50 bg-surface-2 shadow-[0_0_0_1px_rgb(61_214_245/0.25),0_12px_32px_-16px_rgb(61_214_245/0.5)]"
+                ? "border-accent/50 bg-surface-2 shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-accent)_25%,transparent),0_12px_32px_-16px_color-mix(in_oklab,var(--color-accent)_50%,transparent)]"
                 : "border-line bg-surface hover:border-line-strong hover:bg-surface-2",
             )}
           >
@@ -33,7 +33,7 @@ export function ProviderSelector({ value, onChange }: { value: ProviderKind; onC
             <div
               className={cn(
                 "grid size-10 shrink-0 place-items-center rounded-lg transition-colors",
-                active ? "bg-accent-gradient text-[#06121a]" : "bg-surface-3 text-muted group-hover:text-fg",
+                active ? "bg-accent-gradient text-on-accent" : "bg-surface-3 text-muted group-hover:text-fg",
               )}
             >
               {ICONS[p.kind]}

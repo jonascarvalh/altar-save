@@ -602,7 +602,7 @@ impl SyncService {
             message: message.into(),
         };
         if let Err(err) = self.deps.activity.append(entry) {
-            eprintln!("[save-nuvem] falha ao gravar atividade: {err}");
+            eprintln!("[altar-save] falha ao gravar atividade: {err}");
         }
     }
 }

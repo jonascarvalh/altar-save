@@ -77,7 +77,7 @@ function ActiveSync({
           </span>
         )}
       </span>
-      <div className="h-1 w-32 overflow-hidden rounded-full bg-white/8">
+      <div className="h-1 w-32 overflow-hidden rounded-full bg-tint/8">
         <div className="h-full bg-accent-gradient transition-all duration-300" style={{ width: `${progress}%` }} />
       </div>
     </>

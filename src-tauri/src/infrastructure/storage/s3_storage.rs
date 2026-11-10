@@ -33,7 +33,7 @@ impl S3Storage {
             config.secret_access_key.trim(),
             None,
             None,
-            "save-nuvem",
+            "altar-save",
         );
 
         let mut builder = aws_sdk_s3::Config::builder()
