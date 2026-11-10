@@ -419,10 +419,16 @@ fn collect_files(root: &Path, dir: &Path, out: &mut Vec<(FileEntry, Option<DateT
 mod tests {
     use super::*;
 
+    /// Pasta absoluta válida no SO atual (os testes rodam no Windows e no Linux).
+    fn abs(parts: &[&str]) -> PathBuf {
+        parts.iter().fold(std::env::temp_dir(), |p, part| p.join(part))
+    }
+
     #[test]
     fn default_layout_without_ini() {
-        let layout = parse_layout(Path::new("C:\\Users\\x\\Documents\\PCSX2"), None);
-        assert_eq!(layout.cards_dir, PathBuf::from("C:\\Users\\x\\Documents\\PCSX2\\memcards"));
+        let root = abs(&["Documents", "PCSX2"]);
+        let layout = parse_layout(&root, None);
+        assert_eq!(layout.cards_dir, root.join("memcards"));
         assert!(!layout.config_found);
         assert!(layout.slots.is_empty());
     }
@@ -430,16 +436,18 @@ mod tests {
     #[test]
     fn layout_reads_folders_and_slots() {
         let ini = "[Folders]\nMemoryCards = cards\n[MemoryCards]\nSlot1_Enable = true\nSlot1_Filename = Mcd001.ps2\nSlot2_Enable = false\nSlot2_Filename = Mcd002.ps2\n";
-        let layout = parse_layout(Path::new("D:\\PCSX2"), Some(ini));
-        assert_eq!(layout.cards_dir, PathBuf::from("D:\\PCSX2\\cards"));
+        let root = abs(&["PCSX2"]);
+        let layout = parse_layout(&root, Some(ini));
+        assert_eq!(layout.cards_dir, root.join("cards"));
         assert_eq!(layout.slots, vec![(1, "Mcd001.ps2".to_string())]);
     }
 
     #[test]
     fn layout_accepts_absolute_cards_dir() {
-        let ini = "[Folders]\nMemoryCards = E:\\Saves\\PS2\n";
-        let layout = parse_layout(Path::new("D:\\PCSX2"), Some(ini));
-        assert_eq!(layout.cards_dir, PathBuf::from("E:\\Saves\\PS2"));
+        let cards = abs(&["Saves", "PS2"]);
+        let ini = format!("[Folders]\nMemoryCards = {}\n", cards.display());
+        let layout = parse_layout(&abs(&["PCSX2"]), Some(&ini));
+        assert_eq!(layout.cards_dir, cards);
     }
 
     /// Reproduz uma instalação portátil (dados ao lado do pcsx2-qt.exe) com um cartão convertido para pasta.
