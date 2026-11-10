@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Altar Save · seus saves de emulador na nuvem</title>
+    <meta
+      name="description"
+      content="Altar Save sincroniza os saves dos seus emuladores com um bucket seu (Cloudflare R2, Amazon S3 ou compatível). Automático, seguro e sem servidor de terceiros."
+    />
+    <meta property="og:title" content="Altar Save" />
+    <meta property="og:description" content="Seus saves de emulador sincronizados na nuvem, no seu próprio bucket." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+
+    <script>
+      // Aplica o tema salvo (ou o do sistema) antes do primeiro paint.
+      (function () {
+        var mode = null;
+        try {
+          mode = localStorage.getItem("altar-save-site:theme");
+        } catch (e) {}
+        if (mode !== "light" && mode !== "dark") {
+          mode = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        document.documentElement.dataset.theme = mode;
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Ícones (traço no estilo Lucide, o mesmo do app) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" />
+        </symbol>
+        <symbol id="i-merge" viewBox="0 0 24 24">
+          <circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><path d="M6 21V9a9 9 0 0 0 9 9" />
+        </symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" /><line x1="10" x2="10" y1="15" y2="9" /><line x1="14" x2="14" y1="15" y2="9" />
+        </symbol>
+        <symbol id="i-archive" viewBox="0 0 24 24">
+          <rect width="20" height="5" x="2" y="3" rx="1" /><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" /><path d="M10 12h4" />
+        </symbol>
+        <symbol id="i-monitor" viewBox="0 0 24 24">
+          <rect width="20" height="14" x="2" y="3" rx="2" /><line x1="8" x2="16" y1="21" y2="21" /><line x1="12" x2="12" y1="17" y2="21" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+          <path d="m9 12 2 2 4-4" />
+        </symbol>
+        <symbol id="i-gamepad" viewBox="0 0 24 24">
+          <line x1="6" x2="10" y1="11" y2="11" /><line x1="8" x2="8" y1="9" y2="13" />
+          <line x1="15" x2="15.01" y1="12" y2="12" /><line x1="18" x2="18.01" y1="10" y2="10" />
+          <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z" />
+        </symbol>
+        <symbol id="i-database" viewBox="0 0 24 24">
+          <ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5V19A9 3 0 0 0 21 19V5" /><path d="M3 12A9 3 0 0 0 21 12" />
+        </symbol>
+        <symbol id="i-server" viewBox="0 0 24 24">
+          <rect width="20" height="8" x="2" y="2" rx="2" /><rect width="20" height="8" x="2" y="14" rx="2" />
+          <line x1="6" x2="6.01" y1="6" y2="6" /><line x1="6" x2="6.01" y1="18" y2="18" />
+        </symbol>
+        <symbol id="i-download" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
+        </symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+        <symbol id="i-image" viewBox="0 0 24 24">
+          <rect width="18" height="18" x="3" y="3" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+        </symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
+        <symbol id="i-github" viewBox="0 0 16 16">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+          />
+        </symbol>
+      </defs>
+    </svg>
+
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="#" aria-label="Altar Save, início">
+          <img src="assets/logo.svg" alt="" class="brand-mark" />
+          <span class="wordmark"><b>altar</b><span>save</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Seções">
+          <a href="#recursos">Recursos</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#download">Download</a>
+          <a href="#perguntas">Perguntas</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Alternar tema">
+            <svg class="icon theme-icon-dark"><use href="#i-moon" /></svg>
+            <svg class="icon theme-icon-light"><use href="#i-sun" /></svg>
+          </button>
+          <a class="icon-btn" href="https://github.com/jonascarvalh/altar-save" aria-label="Repositório no GitHub">
+            <svg class="icon"><use href="#i-github" /></svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-bg" aria-hidden="true">
+          <div class="grid-bg"></div>
+          <div class="blob blob-gold"></div>
+          <div class="blob blob-blue"></div>
+        </div>
+
+        <div class="container hero-inner">
+          <span class="pill">
+            <svg class="icon"><use href="#i-gamepad" /></svg>
+            PCSX2 · Windows e Linux
+          </span>
+          <h1>
+            Seus saves de emulador,<br />
+            <span class="text-gradient">sincronizados na nuvem.</span>
+          </h1>
+          <p class="lead">
+            O Altar Save mantém os saves dos seus jogos iguais em todos os seus computadores, usando um bucket
+            <strong>seu</strong>: Cloudflare R2, Amazon S3 ou qualquer serviço compatível. Sem conta, sem servidor de terceiros.
+          </p>
+          <div class="cta">
+            <a class="btn btn-primary" href="https://github.com/jonascarvalh/altar-save/releases/latest">
+              <svg class="icon"><use href="#i-download" /></svg>
+              Baixar o Altar Save
+            </a>
+            <a class="btn btn-secondary" href="#como-funciona">
+              Como funciona
+              <svg class="icon"><use href="#i-arrow" /></svg>
+            </a>
+          </div>
+          <p class="cta-note">Windows 10/11 · Linux (.deb, .rpm, AppImage) · instalador de ~4 MB</p>
+        </div>
+
+        <!--
+          Captura principal. Para trocar o espaço reservado pela imagem:
+          <img src="assets/screenshots/biblioteca.png" alt="Biblioteca do Altar Save com os saves do PCSX2" />
+          no lugar do <div class="shot-placeholder">…</div>.
+        -->
+        <div class="container">
+          <figure class="window hero-shot">
+            <div class="window-bar">
+              <img src="assets/logo.svg" alt="" class="window-logo" />
+              <span class="wordmark small"><b>altar</b><span>save</span></span>
+              <span class="window-controls" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
+            <div class="shot-placeholder">
+              <svg class="icon"><use href="#i-image" /></svg>
+              <span>Captura da Biblioteca em breve</span>
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Recursos -->
+      <section class="section" id="recursos">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Recursos</p>
+            <h2>Feito para quem joga em mais de um lugar</h2>
+            <p class="section-lead">Você joga, o Altar Save cuida do resto. E nunca sobrescreve nada sem guardar uma cópia antes.</p>
+          </div>
+
+          <div class="features">
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-cloud" /></svg></div>
+              <h3>Seu próprio armazenamento</h3>
+              <p>Os saves ficam no seu bucket. O Cloudflare R2 tem 10 GB grátis, mais do que suficiente para anos de saves.</p>
+            </article>
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-refresh" /></svg></div>
+              <h3>Sync automático</h3>
+              <p>O app percebe quando o emulador grava e envia o save segundos depois. Ao abrir, ele já baixa o que mudou.</p>
+            </article>
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-merge" /></svg></div>
+              <h3>Conflitos com você no controle</h3>
+              <p>Jogou o mesmo jogo em dois PCs? O app mostra o conflito e você escolhe: manter a versão local ou a da nuvem.</p>
+            </article>
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-pause" /></svg></div>
+              <h3>Seguro com o jogo aberto</h3>
+              <p>Downloads esperam o emulador fechar e acontecem sozinhos depois. Nada é trocado no meio da partida.</p>
+            </article>
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-archive" /></svg></div>
+              <h3>Backups automáticos</h3>
+              <p>Antes de qualquer sobrescrita ou exclusão, a versão local vai para os backups. Envios são atômicos: não existe save pela metade.</p>
+            </article>
+            <article class="card feature">
+              <div class="feature-icon"><svg class="icon"><use href="#i-gamepad" /></svg></div>
+              <h3>Jogo por jogo</h3>
+              <p>Com memory cards em pasta, cada jogo é sincronizado separadamente. Jogos diferentes em PCs diferentes nunca conflitam.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Como funciona -->
+      <section class="section section-alt" id="como-funciona">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Como funciona</p>
+            <h2>Três passos e pronto</h2>
+          </div>
+
+          <ol class="steps">
+            <li class="card step">
+              <span class="step-num">1</span>
+              <h3>Conecte seu bucket</h3>
+              <p>Escolha o provedor, cole as chaves e teste a conexão. O app confere leitura, gravação e permissões na hora.</p>
+            </li>
+            <li class="card step">
+              <span class="step-num">2</span>
+              <h3>Aponte o emulador</h3>
+              <p>O app encontra o PCSX2 sozinho, inclusive instalações portáteis, e lista seus memory cards e jogos.</p>
+            </li>
+            <li class="card step">
+              <span class="step-num">3</span>
+              <h3>Jogue</h3>
+              <p>A partir daí é automático. Em outro PC, instale o Altar Save, use o mesmo bucket e continue de onde parou.</p>
+            </li>
+          </ol>
+
+          <div class="flow" aria-label="O PCSX2 grava, o Altar Save envia para o seu bucket e as outras máquinas baixam">
+            <div class="flow-node">
+              <svg class="icon"><use href="#i-gamepad" /></svg>
+              <span>PCSX2</span>
+              <small>memcards</small>
+            </div>
+            <div class="flow-link"><span>grava</span></div>
+            <div class="flow-node flow-node-main">
+              <img src="assets/logo.svg" alt="" />
+              <span>Altar Save</span>
+              <small>sync em 3 vias</small>
+            </div>
+            <div class="flow-link"><span>envia</span></div>
+            <div class="flow-node">
+              <svg class="icon"><use href="#i-cloud" /></svg>
+              <span>Seu bucket</span>
+              <small>R2 · S3 · …</small>
+            </div>
+            <div class="flow-link"><span>baixa</span></div>
+            <div class="flow-node">
+              <svg class="icon"><use href="#i-monitor" /></svg>
+              <span>Outro PC</span>
+              <small>mesmo bucket</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Provedores -->
+      <section class="section" id="provedores">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Provedores</p>
+            <h2>Use o armazenamento que preferir</h2>
+            <p class="section-lead">Qualquer serviço compatível com S3 funciona. Seus saves nunca passam por um servidor nosso.</p>
+          </div>
+
+          <div class="providers">
+            <article class="card provider provider-featured">
+              <div class="provider-icon"><svg class="icon"><use href="#i-cloud" /></svg></div>
+              <div>
+                <h3>Cloudflare R2 <span class="tag">Recomendado</span></h3>
+                <p>10 GB grátis e sem taxa de saída.</p>
+              </div>
+            </article>
+            <article class="card provider">
+              <div class="provider-icon"><svg class="icon"><use href="#i-database" /></svg></div>
+              <div>
+                <h3>Amazon S3</h3>
+                <p>Se você já usa a AWS.</p>
+              </div>
+            </article>
+            <article class="card provider">
+              <div class="provider-icon"><svg class="icon"><use href="#i-server" /></svg></div>
+              <div>
+                <h3>S3 compatível</h3>
+                <p>MinIO, Backblaze B2, Wasabi e outros.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Capturas -->
+      <!--
+        Para trocar cada espaço reservado pela imagem, use dentro da <figure>:
+        <img src="assets/screenshots/<nome>.png" alt="…" />
+        no lugar do <div class="shot-placeholder">…</div>.
+      -->
+      <section class="section section-alt" id="capturas">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Por dentro</p>
+            <h2>Tudo à vista</h2>
+          </div>
+          <div class="shots">
+            <figure class="window">
+              <div class="shot-placeholder small">
+                <svg class="icon"><use href="#i-image" /></svg>
+                <span>Captura em breve</span>
+              </div>
+              <figcaption><b>Biblioteca</b> Status de cada save, com capa, tamanho e a última máquina que enviou.</figcaption>
+            </figure>
+            <figure class="window">
+              <div class="shot-placeholder small">
+                <svg class="icon"><use href="#i-image" /></svg>
+                <span>Captura em breve</span>
+              </div>
+              <figcaption><b>Nuvem</b> Configuração do provedor e teste de conexão passo a passo.</figcaption>
+            </figure>
+            <figure class="window">
+              <div class="shot-placeholder small">
+                <svg class="icon"><use href="#i-image" /></svg>
+                <span>Captura em breve</span>
+              </div>
+              <figcaption><b>Atividade</b> Histórico de envios, downloads, conflitos e acesso aos backups.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Download -->
+      <section class="section" id="download">
+        <div class="container">
+          <div class="download card">
+            <div class="download-text">
+              <p class="eyebrow">Download</p>
+              <h2>Comece agora</h2>
+              <p>Baixe a versão mais recente na página de releases do GitHub.</p>
+              <ul class="checklist">
+                <li><svg class="icon"><use href="#i-check" /></svg><span>Windows 10 e 11: instalador <code>.exe</code></span></li>
+                <li><svg class="icon"><use href="#i-check" /></svg><span>Linux: <code>.deb</code>, <code>.rpm</code> ou <code>.AppImage</code></span></li>
+                <li><svg class="icon"><use href="#i-check" /></svg><span>Tema claro e escuro</span></li>
+              </ul>
+            </div>
+            <div class="download-actions">
+              <a class="btn btn-primary btn-lg" href="https://github.com/jonascarvalh/altar-save/releases/latest">
+                <svg class="icon"><use href="#i-download" /></svg>
+                Baixar a última versão
+              </a>
+              <a class="btn btn-ghost" href="https://github.com/jonascarvalh/altar-save/blob/main/docs/installation.md">
+                Guia de instalação
+                <svg class="icon"><use href="#i-arrow" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Perguntas -->
+      <section class="section section-alt" id="perguntas">
+        <div class="container narrow">
+          <div class="section-head">
+            <p class="eyebrow">Perguntas</p>
+            <h2>Perguntas frequentes</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Meus saves passam por algum servidor do Altar Save?</summary>
+              <p>Não. O app conversa direto com o seu bucket. Não existe conta nem servidor intermediário.</p>
+            </details>
+            <details>
+              <summary>Quanto custa?</summary>
+              <p>
+                O app é gratuito. O armazenamento é por sua conta: no Cloudflare R2, os primeiros 10 GB são grátis, e saves de PS2
+                ocupam bem menos que isso.
+              </p>
+            </details>
+            <details>
+              <summary>E se eu jogar o mesmo jogo em dois computadores?</summary>
+              <p>
+                O app detecta que os dois lados mudaram e abre um conflito. Você escolhe qual versão manter, e a outra vai para os
+                backups. Com memory cards em pasta, só o mesmo jogo conflita, não o cartão inteiro.
+              </p>
+            </details>
+            <details>
+              <summary>Funciona com outros emuladores?</summary>
+              <p>Por enquanto, só com o PCSX2. DuckStation, RPCS3 e Dolphin estão nos planos.</p>
+            </details>
+            <details>
+              <summary>O Windows mostrou "O Windows protegeu o computador". É seguro?</summary>
+              <p>
+                O aviso aparece porque o instalador ainda não tem assinatura digital. Clique em <b>Mais informações</b> e depois em
+                <b>Executar assim mesmo</b>.
+              </p>
+            </details>
+            <details>
+              <summary>Onde ficam minhas chaves de acesso?</summary>
+              <p>
+                No seu computador, na pasta de dados do app. Nesta versão elas ficam em texto puro, então prefira um token com
+                acesso apenas ao bucket dos saves.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="#">
+          <img src="assets/logo.svg" alt="" class="brand-mark" />
+          <span class="wordmark"><b>altar</b><span>save</span></span>
+        </a>
+        <nav class="footer-links" aria-label="Links">
+          <a href="https://github.com/jonascarvalh/altar-save">GitHub</a>
+          <a href="https://github.com/jonascarvalh/altar-save/releases">Releases</a>
+          <a href="https://github.com/jonascarvalh/altar-save/tree/main/docs">Documentação</a>
+        </nav>
+        <p class="footer-note">PCSX2 é um projeto independente, sem relação com o Altar Save.</p>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+  </body>
+</html>
