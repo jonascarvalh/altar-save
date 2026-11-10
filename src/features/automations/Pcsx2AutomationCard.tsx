@@ -252,7 +252,7 @@ function DetectionPanel({ info }: { info: SourceInfo }) {
             <span className="text-muted">Nenhum</span>
           ) : (
             info.cards.map((card) => (
-              <span key={card} className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[11px] text-fg">
+              <span key={card} className="rounded bg-tint/5 px-1.5 py-0.5 font-mono text-[11px] text-fg">
                 {card}
               </span>
             ))

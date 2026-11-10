@@ -6,7 +6,7 @@ import { cn } from "@/lib/format";
 export type Tone = "neutral" | "accent" | "success" | "warning" | "danger" | "info";
 
 const tones: Record<Tone, string> = {
-  neutral: "bg-white/5 text-muted border-white/8",
+  neutral: "bg-tint/5 text-muted border-tint/8",
   accent: "bg-accent/10 text-accent border-accent/20",
   success: "bg-success/10 text-success border-success/20",
   warning: "bg-warning/10 text-warning border-warning/20",

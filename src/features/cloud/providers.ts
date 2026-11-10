@@ -32,7 +32,7 @@ const location: FieldSpec[] = [
   {
     key: "prefix",
     label: "Pasta no bucket",
-    placeholder: "save-nuvem",
+    placeholder: "altar-save",
     hint: "Opcional. Permite usar o mesmo bucket para outras coisas.",
   },
 ];
@@ -88,7 +88,7 @@ export const EMPTY_CONFIG: CloudConfig = {
   region: "",
   endpoint: "",
   bucket: "",
-  prefix: "save-nuvem",
+  prefix: "altar-save",
   accessKeyId: "",
   secretAccessKey: "",
 };

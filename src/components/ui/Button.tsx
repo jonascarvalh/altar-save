@@ -14,9 +14,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent-gradient text-[#06121a] font-semibold shadow-[0_8px_24px_-8px_rgb(61_214_245/0.55)] hover:brightness-110 active:brightness-95",
+    "bg-accent-gradient text-on-accent font-semibold shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--color-accent)_55%,transparent)] hover:brightness-110 active:brightness-95",
   secondary: "bg-surface-3 text-fg border border-line-strong hover:bg-surface-4",
-  ghost: "text-muted hover:text-fg hover:bg-white/5",
+  ghost: "text-muted hover:text-fg hover:bg-tint/5",
   danger: "text-danger hover:bg-danger/10 border border-danger/25",
 };
 

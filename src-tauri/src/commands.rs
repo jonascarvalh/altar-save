@@ -87,7 +87,7 @@ pub async fn get_library(app: AppHandle, state: State<'_, AppState>) -> AppResul
     let scope = app.asset_protocol_scope();
     for cover in overviews.iter().flat_map(|o| &o.units).filter_map(|u| u.cover_path.as_ref()) {
         if let Err(err) = scope.allow_file(cover) {
-            eprintln!("[save-nuvem] capa indisponível {}: {err}", cover.display());
+            eprintln!("[altar-save] capa indisponível {}: {err}", cover.display());
         }
     }
     Ok(overviews)

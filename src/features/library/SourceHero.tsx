@@ -45,7 +45,7 @@ export function SourceHero({ source }: { source: SourceOverview }) {
       <div className="absolute inset-0 bg-grid opacity-60" />
       <div className="absolute -top-24 -left-16 size-80 rounded-full bg-[#1f6feb]/25 blur-3xl" />
       <div className="absolute -right-10 -bottom-32 size-96 rounded-full bg-accent-2/20 blur-3xl" />
-      <div className="absolute top-6 right-8 font-black tracking-tighter text-white/[0.035] select-none text-[140px] leading-none">
+      <div className="absolute top-6 right-8 font-black tracking-tighter text-tint/[0.035] select-none text-[140px] leading-none">
         PS2
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent" />
@@ -111,7 +111,7 @@ export function SourceHero({ source }: { source: SourceOverview }) {
 
 function Stat({ label, value, tone = "text-fg" }: { label: string; value: string | number; tone?: string }) {
   return (
-    <div className="rounded-lg border border-line bg-black/25 px-3.5 py-2 backdrop-blur">
+    <div className="rounded-lg border border-line bg-bg/50 px-3.5 py-2 backdrop-blur">
       <p className="text-[10px] font-medium tracking-wide text-subtle uppercase">{label}</p>
       <p className={`mt-0.5 text-sm font-semibold ${tone}`}>{value}</p>
     </div>

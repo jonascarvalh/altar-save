@@ -33,7 +33,7 @@ export function Sidebar() {
             <NavLink
               key={source.info.id}
               to="/"
-              className="group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-white/4"
+              className="group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-tint/4"
             >
               <div className="grid size-8 place-items-center rounded-md bg-gradient-to-br from-[#1f6feb]/30 to-accent-2/30 text-fg">
                 <Gamepad2 className="size-4" />
@@ -74,7 +74,7 @@ function NavItem({ to, label, icon, end }: { to: string; label: string; icon: Re
       className={({ isActive }) =>
         cn(
           "relative flex h-9 items-center gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors",
-          isActive ? "bg-white/6 text-fg" : "text-muted hover:bg-white/4 hover:text-fg",
+          isActive ? "bg-tint/6 text-fg" : "text-muted hover:bg-tint/4 hover:text-fg",
         )
       }
     >

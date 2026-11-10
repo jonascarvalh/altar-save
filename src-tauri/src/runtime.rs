@@ -46,7 +46,7 @@ pub async fn run_sync(state: &AppState, source_id: &str, trigger: SyncTrigger) -
 pub fn spawn_sync(state: AppState, source_id: String, trigger: SyncTrigger) {
     tauri::async_runtime::spawn(async move {
         if let Err(err) = run_sync(&state, &source_id, trigger).await {
-            eprintln!("[save-nuvem] sync de {source_id} falhou: {err}");
+            eprintln!("[altar-save] sync de {source_id} falhou: {err}");
         }
     });
 }
@@ -78,7 +78,7 @@ async fn for_each_auto_source(
     for registered in state.sources.sources(&settings) {
         if registered.enabled && registered.auto_sync && filter(registered.source.as_ref()) {
             if let Err(err) = state.sync.sync_source(registered.source.as_ref(), trigger).await {
-                eprintln!("[save-nuvem] sync automático falhou: {err}");
+                eprintln!("[altar-save] sync automático falhou: {err}");
             }
         }
     }

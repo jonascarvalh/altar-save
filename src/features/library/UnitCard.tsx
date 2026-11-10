@@ -191,7 +191,7 @@ export function UnitCard({ unit }: { unit: UnitView }) {
           <p
             className={cn(
               "rounded-md px-2.5 py-1.5 text-[11px] leading-relaxed",
-              unit.status === "error" ? "bg-danger/8 text-danger" : "bg-white/4 text-muted",
+              unit.status === "error" ? "bg-danger/8 text-danger" : "bg-tint/4 text-muted",
             )}
           >
             {unit.message}

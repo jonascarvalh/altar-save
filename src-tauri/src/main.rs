@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    save_nuvem_lib::run()
+    altar_save_lib::run()
 }

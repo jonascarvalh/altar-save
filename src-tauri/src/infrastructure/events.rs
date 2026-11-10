@@ -18,7 +18,7 @@ impl TauriEventSink {
 impl SyncEventSink for TauriEventSink {
     fn emit(&self, event: SyncEvent) {
         if let Err(err) = self.app.emit(SYNC_EVENT, event) {
-            eprintln!("[save-nuvem] falha ao emitir evento: {err}");
+            eprintln!("[altar-save] falha ao emitir evento: {err}");
         }
     }
 }

@@ -55,7 +55,7 @@ impl<T: Serialize + DeserializeOwned + Default> JsonFile<T> {
                     // Preserva o arquivo corrompido para análise e segue com o padrão.
                     let stamp = Utc::now().format("%Y%m%d%H%M%S");
                     let _ = fs::rename(&self.path, self.path.with_extension(format!("corrupt-{stamp}.json")));
-                    eprintln!("[save-nuvem] {} inválido ({err}); usando valores padrão.", self.path.display());
+                    eprintln!("[altar-save] {} inválido ({err}); usando valores padrão.", self.path.display());
                     Ok(T::default())
                 }
             },
